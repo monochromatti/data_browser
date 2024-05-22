@@ -5,7 +5,7 @@ import panel as pn
 import param
 import polars as pl
 
-pn.extension("plotly")
+pn.extension("plotly", design="bootstrap")
 
 
 class FileExplorer(param.Parameterized):
@@ -84,14 +84,14 @@ class FileExplorer(param.Parameterized):
         )
 
         self.file_column = pn.Column(
-            "# Browse",
+            "## Browse",
             self.rootdir_widget,
             self.dir_selector,
             self.file_selector,
             self.csv_params_widget,
-            styles=dict(background="WhiteSmoke"),
             width=720,
             height=1280,
+            margin=25
         )
 
         self._setup_bindings()
@@ -208,11 +208,7 @@ class FileViewer(param.Parameterized):
             self.header_text,
         )
         self.frame_row = pn.Row(self.settings_column, self.frame_view)
-        self.inspect_pane = pn.Column(
-            "# Inspect",
-            self.frame_row,
-            styles=dict(background="WhiteSmoke"),
-        )
+        self.inspect_pane = pn.Column("## Inspect", self.frame_row)
 
         self._setup_bindings()
         self._update_files()
@@ -277,15 +273,9 @@ class DataPlotter(param.Parameterized):
         super().__init__(file_explorer=file_explorer, **params)
         self.plot = self.create_empty_plot()
         self.plot_pane = pn.pane.HoloViews(
-            self.plot,
-            sizing_mode="stretch_both",
-            margin=25
+            self.plot, sizing_mode="stretch_both", margin=25
         )
-        self.plot_column = pn.Column(
-            "# View",
-            self.plot_pane,
-            styles=dict(background="WhiteSmoke"),
-        )
+        self.plot_column = pn.Column("## View", self.plot_pane)
 
         self._setup_bindings()
         self.update_plot()
@@ -321,6 +311,7 @@ app = pn.Row(
     pn.Column(
         file_viewer.inspect_pane,
         data_plotter.plot_column,
+        margin=25
     ),
 )
-app.servable()
+app.servable(title="Data browser")
